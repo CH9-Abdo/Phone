@@ -5,8 +5,8 @@ const products = [
         name: "iPhone 15 Pro Max",
         brand: "Apple",
         price: 280000,
-        image: "https://v-center.dz/4915-large_default/apple-iphone-15-pro-max-256gb.jpg",
-        rating: 5,
+        image: "Photos/Iphone 15 pro max.jpg",
+        rating: 5.0,
         specs: {
             screen: "6.7\" Super Retina XDR OLED",
             refresh: "120Hz",
@@ -15,9 +15,9 @@ const products = [
             camera: "48MP Main + 12MP Front",
             battery: "4422mAh / 27W",
             processor: "A17 Pro Bionic",
-            network: "5G Support"
+            network: "5G Support",
         },
-        tags: ["New", "Premium"]
+        tags: ["New"],
     },
     {
         id: 2,
@@ -25,7 +25,7 @@ const products = [
         brand: "Samsung",
         price: 320000,
         image: "https://v-center.dz/5519-large_default/samsung-galaxy-s24-ultra-5g.jpg",
-        rating: 5,
+        rating: 5.0,
         specs: {
             screen: "6.8\" Dynamic AMOLED 2X",
             refresh: "120Hz",
@@ -34,9 +34,9 @@ const products = [
             camera: "200MP Quad + 12MP Front",
             battery: "5000mAh / 45W",
             processor: "Snapdragon 8 Gen 3",
-            network: "5G Support"
+            network: "5G Support",
         },
-        tags: ["AI Features", "Best Screen"]
+        tags: ["AI Features", "Best Screen"],
     },
     {
         id: 3,
@@ -53,9 +53,9 @@ const products = [
             camera: "50MP Quad Leica + 32MP Front",
             battery: "5000mAh / 90W",
             processor: "Snapdragon 8 Gen 3",
-            network: "5G Support"
+            network: "5G Support",
         },
-        tags: ["Leica Camera"]
+        tags: ["Leica Camera"],
     },
     {
         id: 4,
@@ -72,8 +72,8 @@ const products = [
             camera: "50MP Triple + 32MP Front",
             battery: "4600mAh / 80W",
             processor: "Dimensity 8200",
-            network: "5G Support"
-        }
+            network: "5G Support",
+        },
     },
     {
         id: 5,
@@ -90,8 +90,8 @@ const products = [
             camera: "50MP Triple + 10.5MP Front",
             battery: "5050mAh / 30W",
             processor: "Google Tensor G3",
-            network: "5G Support"
-        }
+            network: "5G Support",
+        },
     },
     {
         id: 6,
@@ -108,8 +108,8 @@ const products = [
             camera: "50MP + 64MP Periscope",
             battery: "5000mAh / 67W",
             processor: "Snapdragon 7s Gen 2",
-            network: "5G Support"
-        }
+            network: "5G Support",
+        },
     },
     {
         id: 7,
@@ -126,8 +126,8 @@ const products = [
             camera: "50MP Triple + 32MP Front",
             battery: "5000mAh / 25W",
             processor: "Exynos 1480",
-            network: "5G Support"
-        }
+            network: "5G Support",
+        },
     },
     {
         id: 8,
@@ -144,9 +144,9 @@ const products = [
             camera: "50MP Dual + 32MP Front",
             battery: "4700mAh / 45W",
             processor: "Snapdragon 8+ Gen 1",
-            network: "5G Support"
+            network: "5G Support",
         },
-        tags: ["Unique Design"]
+        tags: ["Unique Design"],
     },
     {
         id: 9,
@@ -163,8 +163,8 @@ const products = [
             camera: "48MP Triple XMAGE",
             battery: "4815mAh / 88W",
             processor: "Snapdragon 8+ Gen 1",
-            network: "4G Support"
-        }
+            network: "4G Support",
+        },
     },
     {
         id: 10,
@@ -181,8 +181,8 @@ const products = [
             camera: "200MP Triple + 16MP Front",
             battery: "5000mAh / 120W",
             processor: "Dimensity 7200 Ultra",
-            network: "5G Support"
-        }
+            network: "5G Support",
+        },
     },
     {
         id: 11,
@@ -199,8 +199,8 @@ const products = [
             camera: "50MP Hasselblad + 32MP Front",
             battery: "5400mAh / 100W",
             processor: "Snapdragon 8 Gen 3",
-            network: "5G Support"
-        }
+            network: "5G Support",
+        },
     },
     {
         id: 12,
@@ -217,8 +217,8 @@ const products = [
             camera: "50MP Triple ZEISS + 50MP Front",
             battery: "5000mAh / 80W",
             processor: "Dimensity 8200",
-            network: "5G Support"
-        }
+            network: "5G Support",
+        },
     },
     {
         id: 13,
@@ -235,8 +235,8 @@ const products = [
             camera: "50MP Triple + 50MP Front",
             battery: "5000mAh / 80W",
             processor: "Dimensity 7300-Energy",
-            network: "5G Support"
-        }
+            network: "5G Support",
+        },
     },
     {
         id: 14,
@@ -253,8 +253,8 @@ const products = [
             camera: "50MP Triple + 13MP Front",
             battery: "5000mAh / 25W",
             processor: "Exynos 1380",
-            network: "5G Support"
-        }
+            network: "5G Support",
+        },
     },
     {
         id: 15,
@@ -271,9 +271,9 @@ const products = [
             camera: "108MP Triple + 16MP Front",
             battery: "5000mAh / 33W",
             processor: "Snapdragon 685",
-            network: "4G Support"
-        }
-    }
+            network: "4G Support",
+        },
+    },
 ];
 
 const brands = ["Apple", "Samsung", "Xiaomi", "Oppo", "Vivo", "OnePlus", "Google Pixel", "Realme", "Nothing", "Huawei"];
