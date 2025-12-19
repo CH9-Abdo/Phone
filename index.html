@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Djellal Boutique - متجر الهواتف الذكية الأول في الجزائر</title>
+    
+    <!-- Google Fonts: Cairo -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="top-bar">
+    <div class="contact-info">
+        <a href="tel:+213540203685"><i class="fas fa-phone"></i> +213540203685</a>
+        <a href="mailto:ch9work@gmail.com"><i class="fas fa-envelope"></i> ch9work@gmail.com</a>
+    </div>
+    <div>شحن متوفر لـ 58 ولاية | تقسيط مريح</div>
+</div>
+
+<header>
+    <nav class="navbar">
+        <a href="#" class="logo">
+            <i class="fas fa-mobile-alt"></i>
+            <div>djellal boutique <span style="font-size: 12px; display: block; color: var(--text-muted);">الجزائر - سور الغزلان</span></div>
+        </a>
+        <div class="search-container">
+            <i class="fas fa-search"></i>
+            <input type="text" id="mainSearch" placeholder="ابحث عن هاتف، ماركة، أو مواصفات (مثلاً: 120Hz, AMOLED)...">
+        </div>
+        <div class="nav-tools">
+            <button class="btn btn-primary" onclick="scrollToElement('products-area')">تصفح الهواتف</button>
+        </div>
+    </nav>
+</header>
+
+<section class="hero">
+    <div class="hero-content">
+        <span style="background: var(--primary-color); padding: 5px 15px; border-radius: 20px; font-size: 14px; margin-bottom: 20px; display: inline-block;">أكبر تشكيلة هواتف في البويرة</span>
+        <h1>اقتني هاتف أحلامك بالتقسيط المريح</h1>
+        <p>نوفر لك أحدث الهواتف العالمية بضمان رسمي وخطط دفع تصل إلى 12 شهراً. ابدأ رحلتك التقنية معنا اليوم.</p>
+        <div class="hero-btns">
+            <button class="btn btn-primary" onclick="scrollToElement('products-area')">تسوق الآن <i class="fas fa-shopping-bag"></i></button>
+            <button class="btn btn-outline" onclick="scrollToElement('calculator')">حاسبة التقسيط <i class="fas fa-calculator"></i></button>
+        </div>
+    </div>
+</section>
+
+<section class="installment-plans">
+    <div class="plan-card">
+        <i class="fas fa-money-bill-wave"></i>
+        <h3>دفع كاش</h3>
+        <p>احصل على أفضل سعر نقدي متاح في السوق الجزائري</p>
+    </div>
+    <div class="plan-card" style="border-bottom-color: var(--primary-color);">
+        <i class="fas fa-calendar-check"></i>
+        <h3>تقسيط 6 أشهر</h3>
+        <p>زيادة 25% فقط مع دفعات شهرية ميسرة</p>
+    </div>
+    <div class="plan-card" style="border-bottom-color: var(--secondary-color);">
+        <i class="fas fa-calendar-alt"></i>
+        <h3>تقسيط 8 أشهر</h3>
+        <p>زيادة 35% من السعر الأصلي لراحة أكبر</p>
+    </div>
+    <div class="plan-card" style="border-bottom-color: var(--dark-bg);">
+        <i class="fas fa-history"></i>
+        <h3>تقسيط 12 شهر</h3>
+        <p>زيادة 45% وتوزيع التكلفة على سنة كاملة</p>
+    </div>
+</section>
+
+<div class="store-container" id="products-area">
+    <aside class="sidebar">
+        <div class="filter-group">
+            <h4>الشركات المصنعة</h4>
+            <div class="filter-options" id="brandFilters">
+                <!-- JS will populate -->
+            </div>
+        </div>
+
+        <div class="filter-group">
+            <h4>نطاق السعر (DZD)</h4>
+            <input type="range" class="price-slider" id="priceRange" min="20000" max="500000" step="5000">
+            <div style="display: flex; justify-content: space-between; font-size: 12px; margin-top: 10px;">
+                <span id="priceMin">20,000</span>
+                <span id="priceMax">500,000+</span>
+            </div>
+        </div>
+
+        <div class="filter-group">
+            <h4>نوع الشاشة</h4>
+            <div class="filter-options">
+                <label><input type="checkbox" class="screen-filter" value="AMOLED"> AMOLED</label>
+                <label><input type="checkbox" class="screen-filter" value="OLED"> OLED</label>
+                <label><input type="checkbox" class="screen-filter" value="IPS LCD"> IPS LCD</label>
+                <label><input type="checkbox" class="screen-filter" value="Super Retina"> Super Retina</label>
+            </div>
+        </div>
+
+        <div class="filter-group">
+            <h4>معدل التحديث</h4>
+            <div class="filter-options">
+                <label><input type="checkbox" class="refresh-filter" value="120Hz"> 120Hz فأكثر</label>
+                <label><input type="checkbox" class="refresh-filter" value="90Hz"> 90Hz</label>
+                <label><input type="checkbox" class="refresh-filter" value="60Hz"> 60Hz</label>
+            </div>
+        </div>
+
+        <div class="filter-group">
+            <h4>الذاكرة العشوائية (RAM)</h4>
+            <div class="filter-options">
+                <label><input type="checkbox" class="ram-filter" value="4GB"> 4GB</label>
+                <label><input type="checkbox" class="ram-filter" value="8GB"> 8GB</label>
+                <label><input type="checkbox" class="ram-filter" value="12GB"> 12GB+</label>
+            </div>
+        </div>
+    </aside>
+
+    <main class="products-section">
+        <div class="sort-bar">
+            <div id="resultsCount">عرض 0 هاتف</div>
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <label>ترتيب حسب:</label>
+                <select id="sortSelect" style="padding: 5px 10px; border-radius: 5px;">
+                    <option value="newest">الأحدث</option>
+                    <option value="priceLow">السعر: من الأقل</option>
+                    <option value="priceHigh">السعر: من الأعلى</option>
+                    <option value="refresh">معدل التحديث</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="products-grid" id="productsGrid">
+            <!-- JS will populate -->
+        </div>
+    </main>
+</div>
+
+<section class="calculator-section" id="calculator">
+    <div class="calc-grid">
+        <div>
+            <h2 style="font-size: 2.5rem; margin-bottom: 20px;">حاسبة التقسيط الذكية</h2>
+            <p style="color: #94a3b8; margin-bottom: 30px;">اختر هاتفك المفضل ومدة التقسيط لتعرف القسط الشهري فوراً بدون أي تعقيدات.</p>
+            <div class="plan-details-info">
+                <div style="display: flex; gap: 15px; margin-bottom: 15px;">
+                    <i class="fas fa-check-circle" style="color: var(--primary-color);"></i>
+                    <span>لا يشترط وجود بطاقة بنكية</span>
+                </div>
+                <div style="display: flex; gap: 15px; margin-bottom: 15px;">
+                    <i class="fas fa-check-circle" style="color: var(--primary-color);"></i>
+                    <span>دراسة الملف في أقل من 24 ساعة</span>
+                </div>
+            </div>
+        </div>
+        <div class="calc-box">
+            <div class="form-group">
+                <label>اختر الهاتف</label>
+                <select id="calcPhone">
+                    <!-- JS populate -->
+                </select>
+            </div>
+            <div class="form-group">
+                <label>خطة التقسيط</label>
+                <select id="calcPlan">
+                    <option value="1">دفع كامل (0% زيادة)</option>
+                    <option value="1.25">تقسيط 6 أشهر (25% زيادة)</option>
+                    <option value="1.35">تقسيط 8 أشهر (35% زيادة)</option>
+                    <option value="1.45">تقسيط 12 شهر (45% زيادة)</option>
+                </select>
+            </div>
+            <div class="calc-result" id="calcResult">0 DZD / شهر</div>
+            <p style="text-align: center; margin-top: 10px; font-size: 12px; color: #cbd5e1;">هذا السعر تقريبي، اتصل بنا للتأكيد.</p>
+            <button class="btn btn-primary" style="width: 100%; margin-top: 20px;" onclick="requestOnWhatsapp()">اطلب الآن عبر واتساب</button>
+        </div>
+    </div>
+</section>
+
+<!-- Quick View Modal -->
+<div class="modal" id="productModal">
+    <div class="modal-content animate-fade">
+        <span class="modal-close" onclick="closeModal()">&times;</span>
+        <div class="modal-gallery" id="modalGallery">
+            <!-- JS -->
+        </div>
+        <div class="modal-details">
+            <div class="product-brand" id="modalBrand">BRAND</div>
+            <h2 id="modalName" style="font-size: 28px; margin-bottom: 10px;">Phone Name</h2>
+            <div class="star-rating" id="modalRating"></div>
+            <div class="product-price" id="modalPrice" style="font-size: 30px; margin: 15px 0;">0 DZD</div>
+            
+            <div class="payment-plans-table">
+                <h4 style="margin-bottom: 10px;"><i class="fas fa-wallet"></i> خيارات الدفع والتقسيط:</h4>
+                <div id="modalPaymentPlans">
+                    <!-- JS -->
+                </div>
+            </div>
+
+            <div style="margin-top: 30px;">
+                <h4>المواصفات التقنية:</h4>
+                <table class="specs-table" id="modalSpecs">
+                    <!-- JS -->
+                </table>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 30px;">
+                <a href="#" id="whatsappBtn" class="btn btn-primary" style="background: #25d366;"><i class="fab fa-whatsapp"></i> واتساب</a>
+                <a href="tel:+213540203685" class="btn btn-primary"><i class="fas fa-phone"></i> اتصل الآن</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer>
+    <div class="footer-grid">
+        <div class="footer-col">
+            <a href="#" class="logo" style="color: white; margin-bottom: 20px;">
+                <i class="fas fa-mobile-alt"></i>
+                <div>djellal boutique</div>
+            </a>
+            <p style="color: #94a3b8; margin-bottom: 20px;">وجهتك الأولى لأحدث الهواتف الذكية في الجزائر. جودة، ضمان، وتقسيط مريح يناسب الجميع.</p>
+            <div class="social-links">
+                <a href="#"><i class="fab fa-facebook-f"></i></a>
+                <a href="#"><i class="fab fa-instagram"></i></a>
+                <a href="#"><i class="fab fa-tiktok"></i></a>
+            </div>
+        </div>
+        <div class="footer-col">
+            <h3>روابط سريعة</h3>
+            <ul class="footer-links">
+                <li><a href="#" onclick="scrollToElement('products-area')">تصفح الهواتف</a></li>
+                <li><a href="#" onclick="scrollToElement('calculator')">حاسبة التقسيط</a></li>
+                <li><a href="#">سياسة الضمان</a></li>
+                <li><a href="#">عن المتجر</a></li>
+            </ul>
+        </div>
+        <div class="footer-col">
+            <h3>تواصل معنا</h3>
+            <ul class="footer-links">
+                <li><i class="fas fa-map-marker-alt" style="margin-left: 10px;"></i> سور الغزلان، البويرة، الجزائر</li>
+                <li><i class="fas fa-phone" style="margin-left: 10px;"></i> +213540203685</li>
+                <li><i class="fas fa-envelope" style="margin-left: 10px;"></i> ch9work@gmail.com</li>
+                <li><i class="fas fa-clock" style="margin-left: 10px;"></i> مفتوح من 09:00 إلى 20:00</li>
+            </ul>
+        </div>
+    </div>
+    
+    <div style="width: 100%; height: 200px; border-radius: 15px; overflow: hidden; margin-bottom: 30px;">
+        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3224.2257253509174!2d3.685425482663987!3d36.155377315829824!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzbCsDA5JzE5LjQiTiAzwrA0MScxNS40IkU!5e0!3m2!1sen!2sdz!4v1700000000000!5m2!1sen!2sdz" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+    </div>
+
+    <div class="copyright">
+        &copy; 2025 Djellal Boutique. جميع الحقوق محفوظة. تم التطوير بكل حب في الجزائر.
+    </div>
+</footer>
+
+<!-- Custom JS -->
+<script src="js/script.js"></script>
+
+</body>
+</html>
