@@ -295,7 +295,34 @@ document.addEventListener('DOMContentLoaded', () => {
     // Calculator Listeners
     document.getElementById('calcPhone').addEventListener('change', calculateInstallment);
     document.getElementById('calcPlan').addEventListener('change', calculateInstallment);
+
+    // Create Sidebar Overlay
+    const overlay = document.createElement('div');
+    overlay.className = 'sidebar-overlay';
+    overlay.onclick = toggleSidebar;
+    document.body.appendChild(overlay);
+    
+    // Add close button to sidebar
+    const sidebar = document.querySelector('.sidebar');
+    if (sidebar) {
+        const closeBtn = document.createElement('div');
+        closeBtn.className = 'sidebar-close';
+        closeBtn.innerHTML = '&times;';
+        closeBtn.onclick = toggleSidebar;
+        sidebar.prepend(closeBtn);
+    }
 });
+
+function toggleSidebar() {
+    const sidebar = document.querySelector('.sidebar');
+    const overlay = document.querySelector('.sidebar-overlay');
+    if (sidebar && overlay) {
+        sidebar.classList.toggle('active');
+        overlay.classList.toggle('active');
+        // Prevent body scroll when sidebar is open
+        document.body.style.overflow = sidebar.classList.contains('active') ? 'hidden' : 'auto';
+    }
+}
 
 function renderBrands() {
     const container = document.getElementById('brandFilters');
