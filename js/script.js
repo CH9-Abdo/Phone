@@ -24,7 +24,7 @@ const products = [
         name: "Samsung Galaxy S24 Ultra",
         brand: "Samsung",
         price: 320000,
-        image: "https://v-center.dz/5519-large_default/samsung-galaxy-s24-ultra-5g.jpg",
+        image: "Photos/Samsung_galaxy_s25_ultra_1.jpg",
         rating: 5.0,
         specs: {
             screen: "6.8\" Dynamic AMOLED 2X",
@@ -36,7 +36,7 @@ const products = [
             processor: "Snapdragon 8 Gen 3",
             network: "5G Support",
         },
-        tags: ["AI Features", "Best Screen"],
+        tags: ["AI Features"],
     },
     {
         id: 3,
@@ -165,6 +165,7 @@ const products = [
             processor: "Snapdragon 8+ Gen 1",
             network: "4G Support",
         },
+        tags: ["Makash f algeria"],
     },
     {
         id: 10,
@@ -243,7 +244,7 @@ const products = [
         name: "Samsung Galaxy A35",
         brand: "Samsung",
         price: 68000,
-        image: "https://v-center.dz/5680-large_default/samsung-galaxy-a35-5g-8gb-128gb.jpg",
+        image: "Photos/Samsung_galaxy_a15/Samsung_galaxy_a15_1.jpg",
         rating: 4.3,
         specs: {
             screen: "6.6\" Super AMOLED",
@@ -255,6 +256,7 @@ const products = [
             processor: "Exynos 1380",
             network: "5G Support",
         },
+        tags: ["Just a test "],
     },
     {
         id: 15,
