@@ -43,7 +43,7 @@ const products = [
         name: "Xiaomi 14 Ultra",
         brand: "Xiaomi",
         price: 245000,
-        image: "https://v-center.dz/5722-large_default/xiaomi-14-ultra-16gb-512gb.jpg",
+        image: "Photos/Xiaomi_14_Ultra.jpg",
         rating: 4.8,
         specs: {
             screen: "6.73\" LTPO AMOLED",
@@ -62,7 +62,7 @@ const products = [
         name: "Oppo Reno 11 Pro",
         brand: "Oppo",
         price: 115000,
-        image: "https://v-center.dz/5450-large_default/oppo-reno-11-pro-5g-12gb-256gb.jpg",
+        image: "Photos/Oppo_Reno_11_Pro.jpg",
         rating: 4.5,
         specs: {
             screen: "6.7\" AMOLED",
@@ -80,7 +80,7 @@ const products = [
         name: "Google Pixel 8 Pro",
         brand: "Google Pixel",
         price: 195000,
-        image: "https://v-center.dz/5100-large_default/google-pixel-8-pro-12gb-128gb.jpg",
+        image: "Photos/Google_Pixel_8_Pro.jpg",
         rating: 4.7,
         specs: {
             screen: "6.7\" LTPO OLED",
@@ -98,7 +98,7 @@ const products = [
         name: "Realme 12 Pro+",
         brand: "Realme",
         price: 98000,
-        image: "https://v-center.dz/5600-large_default/realme-12-pro-plus-5g.jpg",
+        image: "Photos/Realme_12_Pro+.jpg",
         rating: 4.4,
         specs: {
             screen: "6.7\" AMOLED",
@@ -116,7 +116,7 @@ const products = [
         name: "Samsung Galaxy A55",
         brand: "Samsung",
         price: 82000,
-        image: "https://v-center.dz/5650-large_default/samsung-galaxy-a55-5g-8gb-256gb.jpg",
+        image: "Photos/Samsung_Galaxy_A55.jpg",
         rating: 4.6,
         specs: {
             screen: "6.6\" Super AMOLED",
@@ -134,7 +134,7 @@ const products = [
         name: "Nothing Phone (2)",
         brand: "Nothing",
         price: 135000,
-        image: "https://v-center.dz/4800-large_default/nothing-phone-2-12gb-256gb.jpg",
+        image: "Photos/Nothing_Phone_(2).jpg",
         rating: 4.8,
         specs: {
             screen: "6.7\" LTPO OLED",
@@ -153,7 +153,7 @@ const products = [
         name: "Huawei P60 Pro",
         brand: "Huawei",
         price: 210000,
-        image: "https://v-center.dz/4500-large_default/huawei-p60-pro-8gb-256gb.jpg",
+        image: "Photos/Huawei_P60_Pro.jpg",
         rating: 4.7,
         specs: {
             screen: "6.67\" LTPO OLED",
@@ -172,7 +172,7 @@ const products = [
         name: "Redmi Note 13 Pro+",
         brand: "Xiaomi",
         price: 88000,
-        image: "https://v-center.dz/5300-large_default/xiaomi-redmi-note-13-pro-plus-5g.jpg",
+        image: "Photos/Redmi_Note_13_Pro+.jpg",
         rating: 4.5,
         specs: {
             screen: "6.67\" AMOLED",
@@ -190,7 +190,7 @@ const products = [
         name: "OnePlus 12",
         brand: "OnePlus",
         price: 225000,
-        image: "https://v-center.dz/5400-large_default/oneplus-12-5g-16gb-512gb.jpg",
+        image: "Photos/OnePlus_12.jpg",
         rating: 4.9,
         specs: {
             screen: "6.82\" LTPO4 AMOLED",
@@ -208,7 +208,7 @@ const products = [
         name: "Vivo V30 Pro",
         brand: "Vivo",
         price: 145000,
-        image: "https://v-center.dz/5800-large_default/vivo-v30-pro-5g.jpg",
+        image: "Photos/Vivo_V30_Pro.jpg",
         rating: 4.6,
         specs: {
             screen: "6.78\" AMOLED",
@@ -226,7 +226,7 @@ const products = [
         name: "Oppo Reno 12 Pro",
         brand: "Oppo",
         price: 125000,
-        image: "https://v-center.dz/5900-large_default/oppo-reno-12-pro-5g.jpg",
+        image: "Photos/Oppo_Reno_12_Pro.jpg",
         rating: 4.7,
         specs: {
             screen: "6.7\" AMOLED",
@@ -263,7 +263,7 @@ const products = [
         name: "Redmi Note 13",
         brand: "Xiaomi",
         price: 45000,
-        image: "https://v-center.dz/5250-large_default/xiaomi-redmi-note-13-8gb-256gb.jpg",
+        image: "Photos/Redmi_Note_13.jpg",
         rating: 4.2,
         specs: {
             screen: "6.67\" AMOLED",

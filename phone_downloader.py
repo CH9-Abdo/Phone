@@ -5,7 +5,7 @@ from PyQt5.QtWidgets import (QApplication, QMainWindow, QWidget, QVBoxLayout,
                              QHBoxLayout, QLineEdit, QPushButton, QTextEdit, 
                              QLabel, QFileDialog, QProgressBar, QComboBox)
 from PyQt5.QtCore import QThread, pyqtSignal, Qt
-from PyQt5.QtGui import QFont
+from PyQt5.QtGui import QFont, QIcon
 from bs4 import BeautifulSoup
 import json
 
@@ -22,7 +22,7 @@ class DownloadThread(QThread):
         
     def run(self):
         try:
-            self.progress.emit(f"🔍 البحث عن: {self.phone_name}...")
+            self.progress.emit(f"🔍 Searching for: {self.phone_name}...")
             
             # Search for phone on GSMArena
             search_url = "https://www.gsmarena.com/results.php3"
@@ -38,11 +38,11 @@ class DownloadThread(QThread):
             # Find first phone link
             phone_link = soup.select_one('.makers a')
             if not phone_link:
-                self.error.emit("❌ لم يتم العثور على الهاتف")
+                self.error.emit("❌ Phone not found")
                 return
                 
             phone_url = "https://www.gsmarena.com/" + phone_link['href']
-            self.progress.emit(f"✅ تم العثور على الهاتف: {phone_link.text.strip()}")
+            self.progress.emit(f"✅ Phone found: {phone_link.text.strip()}")
             
             # Get phone page
             response = requests.get(phone_url, headers=headers, timeout=10)
@@ -64,7 +64,7 @@ class DownloadThread(QThread):
                     images.append(img_url)
             
             if not images:
-                self.error.emit("❌ لم يتم العثور على صور")
+                self.error.emit("❌ No images found")
                 return
             
             # Create folder for phone
@@ -72,7 +72,7 @@ class DownloadThread(QThread):
             os.makedirs(phone_folder, exist_ok=True)
             
             # Download images
-            self.progress.emit(f"📥 جاري تحميل {len(images)} صورة...")
+            self.progress.emit(f"📥 Downloading {len(images)} images...")
             
             for idx, img_url in enumerate(images, 1):
                 try:
@@ -92,16 +92,16 @@ class DownloadThread(QThread):
                     with open(filepath, 'wb') as f:
                         f.write(img_response.content)
                     
-                    self.progress.emit(f"✅ تم تحميل الصورة {idx}/{len(images)}")
+                    self.progress.emit(f"✅ Downloaded image {idx}/{len(images)}")
                     
                 except Exception as e:
-                    self.progress.emit(f"⚠️ فشل تحميل الصورة {idx}: {str(e)}")
+                    self.progress.emit(f"⚠️ Failed to download image {idx}: {str(e)}")
             
-            self.progress.emit(f"✅ اكتمل التحميل! الصور في: {phone_folder}")
+            self.progress.emit(f"✅ Download complete! Images saved in: {phone_folder}")
             self.finished.emit()
             
         except Exception as e:
-            self.error.emit(f"❌ خطأ: {str(e)}")
+            self.error.emit(f"❌ Error: {str(e)}")
 
 
 class PhoneImageDownloader(QMainWindow):
@@ -113,56 +113,61 @@ class PhoneImageDownloader(QMainWindow):
     def init_ui(self):
         self.setWindowTitle("📱 Phone Images Downloader")
         self.setGeometry(100, 100, 700, 600)
+        
+        # Light Theme Stylesheet
         self.setStyleSheet("""
             QMainWindow {
-                background-color: #1e1e1e;
+                background-color: #f5f5f7;
             }
             QLabel {
-                color: #ffffff;
+                color: #333333;
                 font-size: 14px;
             }
             QLineEdit {
-                background-color: #2d2d2d;
-                color: #ffffff;
-                border: 2px solid #3d3d3d;
-                border-radius: 5px;
+                background-color: #ffffff;
+                color: #333333;
+                border: 1px solid #d1d1d6;
+                border-radius: 6px;
                 padding: 8px;
                 font-size: 13px;
             }
             QLineEdit:focus {
-                border: 2px solid #0d7377;
+                border: 2px solid #007aff;
             }
             QPushButton {
-                background-color: #0d7377;
+                background-color: #007aff;
                 color: white;
                 border: none;
-                border-radius: 5px;
+                border-radius: 6px;
                 padding: 10px;
                 font-size: 13px;
                 font-weight: bold;
             }
             QPushButton:hover {
-                background-color: #14a085;
+                background-color: #0062cc;
             }
             QPushButton:disabled {
-                background-color: #3d3d3d;
-                color: #7d7d7d;
+                background-color: #b0b0b0;
+                color: #f0f0f0;
             }
             QTextEdit {
-                background-color: #2d2d2d;
-                color: #00ff00;
-                border: 2px solid #3d3d3d;
-                border-radius: 5px;
+                background-color: #ffffff;
+                color: #333333;
+                border: 1px solid #d1d1d6;
+                border-radius: 6px;
                 padding: 8px;
                 font-family: 'Courier New';
                 font-size: 12px;
             }
             QComboBox {
-                background-color: #2d2d2d;
-                color: #ffffff;
-                border: 2px solid #3d3d3d;
-                border-radius: 5px;
+                background-color: #ffffff;
+                color: #333333;
+                border: 1px solid #d1d1d6;
+                border-radius: 6px;
                 padding: 8px;
+            }
+            QComboBox::drop-down {
+                border: none;
             }
         """)
         
@@ -170,22 +175,23 @@ class PhoneImageDownloader(QMainWindow):
         self.setCentralWidget(central_widget)
         layout = QVBoxLayout(central_widget)
         layout.setSpacing(15)
-        layout.setContentsMargins(20, 20, 20, 20)
+        layout.setContentsMargins(25, 25, 25, 25)
         
         # Title
-        title = QLabel("📱 أداة تحميل صور الهواتف")
-        title.setFont(QFont("Arial", 18, QFont.Bold))
+        title = QLabel("📱 Phone Images Downloader")
+        title.setFont(QFont("Segoe UI", 20, QFont.Bold))
         title.setAlignment(Qt.AlignCenter)
+        title.setStyleSheet("color: #1c1c1e; margin-bottom: 10px;")
         layout.addWidget(title)
         
         # Phone name input
-        layout.addWidget(QLabel("🔍 اسم الهاتف:"))
+        layout.addWidget(QLabel("🔍 Phone Name:"))
         self.phone_input = QLineEdit()
-        self.phone_input.setPlaceholderText("مثال: Samsung Galaxy S24 Ultra")
+        self.phone_input.setPlaceholderText("e.g. Samsung Galaxy S24 Ultra")
         layout.addWidget(self.phone_input)
         
         # Image count selector
-        layout.addWidget(QLabel("📸 عدد الصور:"))
+        layout.addWidget(QLabel("📸 Number of Images:"))
         self.image_count_combo = QComboBox()
         self.image_count_combo.addItems(["1", "2", "3", "5", "10", "15"])
         self.image_count_combo.setCurrentText("5")
@@ -193,38 +199,48 @@ class PhoneImageDownloader(QMainWindow):
         
         # Save path
         path_layout = QHBoxLayout()
-        layout.addWidget(QLabel("📁 مسار الحفظ:"))
+        layout.addWidget(QLabel("📁 Save Path:"))
         self.path_input = QLineEdit()
-        self.path_input.setText(os.path.expanduser("~/Desktop"))
+        self.path_input.setText(os.getcwd())
         self.path_input.setReadOnly(True)
         path_layout.addWidget(self.path_input)
         
-        self.browse_btn = QPushButton("📂 اختر")
+        self.browse_btn = QPushButton("📂 Browse")
         self.browse_btn.clicked.connect(self.browse_folder)
         self.browse_btn.setMaximumWidth(100)
+        self.browse_btn.setStyleSheet("""
+            QPushButton {
+                background-color: #e5e5ea;
+                color: #333333;
+            }
+            QPushButton:hover {
+                background-color: #d1d1d6;
+            }
+        """)
         path_layout.addWidget(self.browse_btn)
         layout.addLayout(path_layout)
         
         # Download button
-        self.download_btn = QPushButton("⬇️ تحميل الصور")
+        self.download_btn = QPushButton("⬇️ Download Images")
         self.download_btn.clicked.connect(self.start_download)
         self.download_btn.setMinimumHeight(45)
+        self.download_btn.setCursor(Qt.PointingHandCursor)
         layout.addWidget(self.download_btn)
         
         # Log area
-        layout.addWidget(QLabel("📋 السجل:"))
+        layout.addWidget(QLabel("📋 Logs:"))
         self.log_text = QTextEdit()
         self.log_text.setReadOnly(True)
         layout.addWidget(self.log_text)
         
         # Info label
-        info = QLabel("💡 البرنامج يستخدم GSMArena للحصول على صور الهواتف بجودة عالية")
-        info.setStyleSheet("color: #888888; font-size: 11px;")
+        info = QLabel("💡 This tool uses GSMArena to fetch high-quality phone images.")
+        info.setStyleSheet("color: #8e8e93; font-size: 11px;")
         info.setAlignment(Qt.AlignCenter)
         layout.addWidget(info)
         
     def browse_folder(self):
-        folder = QFileDialog.getExistingDirectory(self, "اختر مجلد الحفظ")
+        folder = QFileDialog.getExistingDirectory(self, "Select Save Folder")
         if folder:
             self.path_input.setText(folder)
     
@@ -239,18 +255,18 @@ class PhoneImageDownloader(QMainWindow):
         save_path = self.path_input.text()
         
         if not phone_name:
-            self.log("❌ الرجاء إدخال اسم الهاتف")
+            self.log("❌ Please enter a phone name")
             return
         
         if not os.path.exists(save_path):
-            self.log("❌ مسار الحفظ غير موجود")
+            self.log("❌ Save path does not exist")
             return
         
         image_count = int(self.image_count_combo.currentText())
         
         self.download_btn.setEnabled(False)
         self.log(f"\n{'='*50}")
-        self.log(f"🚀 بدء التحميل: {phone_name}")
+        self.log(f"🚀 Starting download: {phone_name}")
         
         self.download_thread = DownloadThread(phone_name, save_path, image_count)
         self.download_thread.progress.connect(self.log)
@@ -264,11 +280,16 @@ class PhoneImageDownloader(QMainWindow):
     
     def on_finished(self):
         self.download_btn.setEnabled(True)
-        self.log("🎉 انتهى التحميل بنجاح!")
+        self.log("🎉 Download finished successfully!")
 
 
 def main():
     app = QApplication(sys.argv)
+    
+    # Set app font to something clean
+    font = QFont("Segoe UI", 10)
+    app.setFont(font)
+    
     window = PhoneImageDownloader()
     window.show()
     sys.exit(app.exec_())
