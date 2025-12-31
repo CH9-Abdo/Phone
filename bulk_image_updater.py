@@ -1,6 +1,7 @@
 import os
 import re
 import requests
+import time
 from bs4 import BeautifulSoup
 
 # Configuration
@@ -115,6 +116,7 @@ def main():
             
             if should_download and current_phone_name:
                 print(f"🔄 Processing {current_phone_name}...")
+                time.sleep(2) # Avoid Rate Limiting
                 new_image_path = download_phone_image(current_phone_name)
                 
                 if new_image_path:
