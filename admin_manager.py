@@ -6,7 +6,7 @@ import re
 import shutil
 
 # File Configuration
-JS_FILE_PATH = os.path.join("js", "script.js")
+JS_FILE_PATH = os.path.join("js", "phones_data.js")
 PHOTOS_DIR = "Photos"
 
 class PhoneManagerApp:

@@ -5,7 +5,7 @@ import time
 from bs4 import BeautifulSoup
 
 # Configuration
-JS_FILE_PATH = os.path.join("js", "script.js")
+JS_FILE_PATH = os.path.join("js", "phones_data.js")
 PHOTOS_DIR = "Photos"
 
 # Headers for scraping
