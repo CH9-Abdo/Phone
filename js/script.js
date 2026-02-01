@@ -5,6 +5,7 @@
 let currentData = [];
 let currentPage = 1;
 const itemsPerPage = 12;
+let compareList = []; // IDs of phones to compare
 
 // --- DOM Ready ---
 document.addEventListener('DOMContentLoaded', () => {
@@ -15,9 +16,42 @@ document.addEventListener('DOMContentLoaded', () => {
 
     currentData = [...products]; // Initialize with all products
     
+    initTheme(); // Initialize Dark Mode
     setupEventListeners();
     renderPage();
 });
+
+// --- Theme Management ---
+function initTheme() {
+    const savedTheme = localStorage.getItem('theme');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    
+    if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+        document.body.setAttribute('data-theme', 'dark');
+        updateThemeIcon(true);
+    } else {
+        document.body.removeAttribute('data-theme');
+        updateThemeIcon(false);
+    }
+}
+
+function toggleTheme() {
+    const isDark = document.body.getAttribute('data-theme') === 'dark';
+    if (isDark) {
+        document.body.removeAttribute('data-theme');
+        localStorage.setItem('theme', 'light');
+        updateThemeIcon(false);
+    } else {
+        document.body.setAttribute('data-theme', 'dark');
+        localStorage.setItem('theme', 'dark');
+        updateThemeIcon(true);
+    }
+}
+
+function updateThemeIcon(isDark) {
+    const btn = document.getElementById('themeToggle');
+    if(btn) btn.innerHTML = isDark ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+}
 
 // --- Setup ---
 function setupEventListeners() {
@@ -89,8 +123,10 @@ function handleFilters() {
 
 function handleSearch() {
     handleFilters();
-    if (window.scrollY < 400) {
-        scrollToElement('products-area');
+    // Auto scroll to products if user types and is at the top
+    const searchInput = document.getElementById('mainSearch');
+    if (searchInput.value.length > 0) {
+         scrollToElement('products-area');
     }
 }
 
@@ -141,6 +177,7 @@ function renderGrid(data) {
         const installment12 = Math.round((p.price * 1.45) / 12);
         const tagsHtml = p.tags && p.tags.length > 0 ? `<span class="product-badge">${p.tags[0]}</span>` : '';
         const batteryDisplay = p.specs.battery ? p.specs.battery.split(' / ')[0] : 'N/A';
+        const isCompared = compareList.includes(p.id);
 
         card.innerHTML = `
             ${tagsHtml}
@@ -159,6 +196,11 @@ function renderGrid(data) {
                     <span><i class="fas fa-mobile"></i> ${p.specs.refresh}</span>
                     <span><i class="fas fa-battery-full"></i> ${batteryDisplay}</span>
                 </div>
+                
+                <label class="checkbox-container">
+                    <input type="checkbox" onchange="toggleCompare(${p.id}, this)" ${isCompared ? 'checked' : ''}>
+                    <span>إضافة للمقارنة</span>
+                </label>
             </div>
             <div class="product-actions">
                 <button class="btn btn-outline" style="border-color: #ddd; color: var(--text-main);" onclick="openModal(${p.id})">التفاصيل</button>
@@ -167,6 +209,98 @@ function renderGrid(data) {
         `;
         grid.appendChild(card);
     });
+}
+
+// --- Comparison Logic ---
+function toggleCompare(id, checkbox) {
+    if (checkbox.checked) {
+        if (compareList.length >= 3) {
+            alert("يمكنك مقارنة 3 هواتف كحد أقصى");
+            checkbox.checked = false;
+            return;
+        }
+        if (!compareList.includes(id)) {
+            compareList.push(id);
+        }
+    } else {
+        compareList = compareList.filter(item => item !== id);
+    }
+    updateCompareBar();
+}
+
+function updateCompareBar() {
+    const bar = document.getElementById('compareBar');
+    const thumbs = document.getElementById('compareThumbs');
+    const count = document.getElementById('compareCount');
+    
+    if (compareList.length > 0) {
+        bar.classList.add('active');
+    } else {
+        bar.classList.remove('active');
+    }
+    
+    count.innerText = compareList.length;
+    thumbs.innerHTML = '';
+    
+    compareList.forEach(id => {
+        const p = products.find(x => x.id === id);
+        if (p) {
+            const img = document.createElement('img');
+            img.src = p.image;
+            img.className = 'compare-thumb';
+            thumbs.appendChild(img);
+        }
+    });
+}
+
+function clearComparison() {
+    compareList = [];
+    updateCompareBar();
+    renderGrid(currentData); // Re-render to uncheck boxes
+}
+
+function openCompareModal() {
+    if (compareList.length < 2) {
+        alert("الرجاء اختيار هاتفين على الأقل للمقارنة");
+        return;
+    }
+    
+    const table = document.getElementById('compareTable');
+    table.innerHTML = '';
+    
+    const phones = compareList.map(id => products.find(p => p.id === id));
+    
+    // Header Row (Images & Names)
+    let headerRow = '<tr><th>المواصفات</th>';
+    phones.forEach(p => {
+        headerRow += `
+            <td>
+                <img src="${p.image}" class="compare-header-img">
+                <div style="font-weight:bold;">${p.name}</div>
+                <div style="color:var(--primary-color);">${p.price.toLocaleString()} DZD</div>
+            </td>
+        `;
+    });
+    headerRow += '</tr>';
+    table.innerHTML += headerRow;
+    
+    // Specs Rows
+    const specsKeys = ['screen', 'refresh', 'ram', 'storage', 'camera', 'battery', 'processor', 'network'];
+    
+    specsKeys.forEach(key => {
+        let row = `<tr><td>${translateKey(key)}</td>`;
+        phones.forEach(p => {
+            row += `<td>${p.specs[key] || '-'}</td>`;
+        });
+        row += '</tr>';
+        table.innerHTML += row;
+    });
+
+    document.getElementById('compareModal').style.display = 'flex';
+}
+
+function closeCompareModal() {
+    document.getElementById('compareModal').style.display = 'none';
 }
 
 function renderPagination(data) {
@@ -354,7 +488,11 @@ function scrollToElement(id) {
 
 window.onclick = function(event) {
     const modal = document.getElementById('productModal');
+    const compareModal = document.getElementById('compareModal');
     if (event.target == modal) {
         closeModal();
+    }
+    if (event.target == compareModal) {
+        closeCompareModal();
     }
 }

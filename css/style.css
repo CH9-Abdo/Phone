@@ -12,6 +12,42 @@
     --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+[data-theme="dark"] {
+    --light-bg: #0f172a;
+    --card-bg: #1e293b;
+    --text-main: #f1f5f9;
+    --text-muted: #94a3b8;
+    --glass: rgba(15, 23, 42, 0.9);
+    --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+    border-color: #334155;
+}
+
+[data-theme="dark"] .product-card,
+[data-theme="dark"] .sidebar,
+[data-theme="dark"] .modal-content,
+[data-theme="dark"] .sort-bar,
+[data-theme="dark"] .installment-plans,
+[data-theme="dark"] .page-btn {
+    background: var(--card-bg);
+    border-color: #334155;
+    color: var(--text-main);
+}
+
+[data-theme="dark"] .product-image {
+    background: #334155; /* Darker background for images in dark mode */
+}
+
+[data-theme="dark"] .search-container input {
+    background: #1e293b;
+    border-color: #334155;
+    color: white;
+}
+
+[data-theme="dark"] .payment-pill {
+    background: #172554;
+    color: #93c5fd;
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -689,4 +725,126 @@ footer {
     opacity: 0.5;
     cursor: not-allowed;
     background-color: #f1f5f9;
+}
+
+/* --- Comparison Tool Styles --- */
+.compare-bar {
+    position: fixed;
+    bottom: -100px; /* Hidden by default */
+    left: 0;
+    width: 100%;
+    background: var(--dark-bg);
+    color: white;
+    padding: 15px 5%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 -5px 20px rgba(0,0,0,0.2);
+    z-index: 2100; /* Above bottom nav */
+    transition: bottom 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    border-top: 3px solid var(--accent-color);
+}
+
+.compare-bar.active {
+    bottom: 0;
+    padding-bottom: 20px; /* Adjust for safe areas */
+}
+
+@media (max-width: 992px) {
+    .compare-bar.active { bottom: 60px; } /* Above mobile nav */
+}
+
+.compare-info {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.compare-thumbs {
+    display: flex;
+    gap: 10px;
+}
+
+.compare-thumb {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 2px solid white;
+    background: white;
+    object-fit: contain;
+    padding: 2px;
+}
+
+.compare-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.compare-btn-container {
+    margin-top: 10px;
+    text-align: center;
+}
+
+.checkbox-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    cursor: pointer;
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-top: 10px;
+    user-select: none;
+}
+
+.checkbox-container input {
+    accent-color: var(--accent-color);
+    width: 16px;
+    height: 16px;
+}
+
+/* Comparison Table */
+.compare-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    table-layout: fixed;
+}
+
+.compare-table th, .compare-table td {
+    padding: 15px;
+    border: 1px solid #e2e8f0;
+    text-align: center;
+    vertical-align: middle;
+}
+
+[data-theme="dark"] .compare-table th, 
+[data-theme="dark"] .compare-table td {
+    border-color: #334155;
+}
+
+.compare-table th {
+    background: #f8fafc;
+    font-weight: 700;
+    width: 150px;
+}
+
+[data-theme="dark"] .compare-table th {
+    background: #0f172a;
+    color: var(--text-muted);
+}
+
+.compare-header-img {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+    margin-bottom: 10px;
+}
+
+.compare-remove {
+    color: var(--secondary-color);
+    cursor: pointer;
+    font-size: 12px;
+    margin-top: 5px;
+    display: block;
 }
