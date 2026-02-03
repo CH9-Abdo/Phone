@@ -181,12 +181,12 @@ function renderGrid(data) {
 
         card.innerHTML = `
             ${tagsHtml}
-            <div style="height: 200px; display: flex; align-items: center; justify-content: center; overflow: hidden; background: #fff;">
+            <div style="height: 200px; display: flex; align-items: center; justify-content: center; overflow: hidden; background: #fff; cursor: pointer;" onclick="openModal(${p.id})">
                 <img src="${p.image}" alt="${p.name}" class="product-image" onerror="this.src='https://via.placeholder.com/200x250?text=No+Image'">
             </div>
             <div class="product-info">
                 <div class="product-brand">${p.brand}</div>
-                <h3 class="product-name">${p.name}</h3>
+                <h3 class="product-name" style="cursor: pointer;" onclick="openModal(${p.id})">${p.name}</h3>
                 <div class="star-rating">${renderStars(p.rating)}</div>
                 <div class="product-price">${p.price.toLocaleString()} DZD</div>
                 <div class="payment-pill">أو تقسيط يبدأ من ${installment12.toLocaleString()} DZD/شهر</div>
@@ -199,11 +199,11 @@ function renderGrid(data) {
                 
                 <label class="checkbox-container">
                     <input type="checkbox" onchange="toggleCompare(${p.id}, this)" ${isCompared ? 'checked' : ''}>
-                    <span>إضافة للمقارنة</span>
+                    <span>مقارنة</span>
                 </label>
             </div>
             <div class="product-actions">
-                <button class="btn btn-outline" style="border-color: #ddd; color: var(--text-main);" onclick="openModal(${p.id})">التفاصيل</button>
+                <button class="btn btn-outline detail-btn" onclick="openModal(${p.id})">التفاصيل</button>
                 <button class="btn btn-primary" onclick="buyNow(${p.id})">اطلب الآن</button>
             </div>
         `;
@@ -365,6 +365,14 @@ function toggleSidebar() {
     document.querySelector('.sidebar')?.classList.toggle('active');
     document.querySelector('.sidebar-overlay')?.classList.toggle('active');
     document.body.style.overflow = document.querySelector('.sidebar.active') ? 'hidden' : 'auto';
+}
+
+function focusSearch() {
+    const searchInput = document.getElementById('mainSearch');
+    if (searchInput) {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        setTimeout(() => searchInput.focus(), 300);
+    }
 }
 
 function renderBrands() {

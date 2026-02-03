@@ -355,6 +355,16 @@ header {
 
 .product-actions .btn { padding: 8px 0; font-size: 14px; }
 
+.product-actions .btn-outline {
+    border: 1px solid #ddd;
+    color: var(--text-main);
+}
+
+[data-theme="dark"] .product-actions .btn-outline {
+    border-color: #334155;
+    color: var(--text-main);
+}
+
 /* Modal */
 .modal {
     position: fixed;
@@ -588,6 +598,11 @@ footer {
 
 /* Responsive Media Queries */
 @media (max-width: 992px) {
+    .navbar { flex-wrap: wrap; }
+    .search-container { order: 3; width: 100% !important; max-width: none; margin-top: 10px; }
+    .logo { order: 1; }
+    .nav-tools { order: 2; }
+
     .store-container { grid-template-columns: 1fr; padding: 20px; }
     
     /* Mobile Sidebar (Drawer) */
@@ -650,10 +665,25 @@ footer {
 
     .calc-grid { grid-template-columns: 1fr; gap: 30px; }
     .top-bar { display: none; } /* Save space on mobile */
-    .nav-tools { display: none; } /* Replaced by bottom nav */
+    
+    .nav-tools { 
+        display: flex; 
+        gap: 5px;
+    }
+    .nav-tools .btn-primary { display: none; } /* Hide browse button on mobile */
 }
 
 @media (max-width: 500px) {
+    .navbar { padding: 10px 15px; }
+    .logo div { font-size: 14px; }
+    .logo span { font-size: 10px !important; }
+    
+    .search-container input { padding: 8px 35px 8px 10px; font-size: 14px; }
+    .search-container i { right: 10px; }
+
+    .compare-text { display: none; } /* Hide text on small screens */
+    .compare-info { gap: 10px; }
+    
     .products-grid {
         grid-template-columns: 1fr 1fr; /* 2 columns on small screens */
         gap: 12px;
@@ -847,4 +877,33 @@ footer {
     font-size: 12px;
     margin-top: 5px;
     display: block;
+}
+
+.compare-count-badge {
+    background: var(--accent-color);
+    color: white;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+@media (max-width: 768px) {
+    .compare-table th {
+        width: 100px;
+        font-size: 12px;
+        padding: 8px;
+    }
+    .compare-table td {
+        font-size: 12px;
+        padding: 8px;
+    }
+    .compare-header-img {
+        width: 50px;
+        height: 50px;
+    }
 }
