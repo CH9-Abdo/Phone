@@ -872,6 +872,23 @@ header {
     z-index: 2;
 }
 
+.product-badge.out-of-stock {
+    background: linear-gradient(135deg, #e8183a 0%, #b91c1c 100%);
+    box-shadow: 0 3px 10px rgba(232,24,58,0.4);
+}
+
+.btn:disabled {
+    background: #9ca3af !important;
+    cursor: not-allowed;
+    box-shadow: none !important;
+}
+
+.btn-whatsapp.disabled {
+    background: #9ca3af !important;
+    pointer-events: none;
+    cursor: not-allowed;
+}
+
 /* Quick view overlay on hover */
 .product-img-overlay {
     position: absolute;

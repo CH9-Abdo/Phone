@@ -4,12 +4,18 @@ import re
 import json
 import requests
 import shutil
+from datetime import datetime
 from bs4 import BeautifulSoup
+try:
+    from PIL import Image
+    HAS_PILLOW = True
+except ImportError:
+    HAS_PILLOW = False
 from PyQt5.QtWidgets import (QApplication, QMainWindow, QWidget, QVBoxLayout, 
                              QHBoxLayout, QLineEdit, QPushButton, QTextEdit, 
                              QLabel, QFileDialog, QListWidget, QStackedWidget,
                              QFormLayout, QFrame, QMessageBox, QScrollArea,
-                             QProgressBar, QListWidgetItem)
+                             QProgressBar, QListWidgetItem, QComboBox)
 from PyQt5.QtCore import QThread, pyqtSignal, Qt, QSize
 from PyQt5.QtGui import QFont, QIcon, QColor, QPalette
 
@@ -119,6 +125,17 @@ class DownloadThread(QThread):
                     
                     with open(filepath, 'wb') as f:
                         f.write(img_res.content)
+                    
+                    # --- IMAGE RESIZING ---
+                    if HAS_PILLOW:
+                        try:
+                            img = Image.open(filepath)
+                            img.thumbnail((800, 800))
+                            img.save(filepath, "JPEG", quality=85)
+                            self.progress.emit(f"⚡ Image optimized (resized to 800px)")
+                        except Exception as e:
+                            self.progress.emit(f"⚠️ Optimization failed: {str(e)}")
+                    
                     img_path = f"{PHOTOS_DIR}/{filename}"
                     self.progress.emit(f"✅ Image downloaded: {filename}")
 
@@ -275,6 +292,10 @@ class SmartPhoneManager(QMainWindow):
             self.inputs[key.lower()] = QLineEdit()
             self.form_layout.addRow(QLabel(f"{key}:"), self.inputs[key.lower()])
             
+        self.inputs['status'] = QComboBox()
+        self.inputs['status'].addItems(['available', 'out_of_stock'])
+        self.form_layout.addRow(QLabel("Status:"), self.inputs['status'])
+
         self.form_layout.addRow(QLabel("<b>Specifications:</b>"), QLabel(""))
         for key in ['Screen', 'Refresh', 'RAM', 'Storage', 'Camera', 'Battery', 'Processor', 'Network']:
             self.inputs[key.lower()] = QLineEdit()
@@ -291,11 +312,15 @@ class SmartPhoneManager(QMainWindow):
         self.save_btn.setObjectName("Primary")
         self.save_btn.clicked.connect(self.save_current_phone)
         
+        self.hist_btn = QPushButton("📈 History")
+        self.hist_btn.clicked.connect(self.show_price_history)
+
         self.del_btn = QPushButton("🗑️ Delete")
         self.del_btn.setObjectName("Danger")
         self.del_btn.clicked.connect(self.delete_current_phone)
         
         btn_layout.addWidget(self.del_btn)
+        btn_layout.addWidget(self.hist_btn)
         btn_layout.addStretch()
         btn_layout.addWidget(self.save_btn)
         right_panel.addLayout(btn_layout)
@@ -356,6 +381,37 @@ class SmartPhoneManager(QMainWindow):
         btn2.clicked.connect(self.bulk_download)
         layout.addWidget(btn2)
         
+        # --- BULK PRICE SECTION ---
+        bulk_group = QFrame()
+        bulk_group.setStyleSheet("background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; margin-top: 20px;")
+        bulk_l = QVBoxLayout(bulk_group)
+        bulk_l.addWidget(QLabel("<b>💰 Bulk Price Updater</b>"))
+        
+        form = QHBoxLayout()
+        self.bulk_brand = QComboBox()
+        self.bulk_brand.addItem("All Brands")
+        # Brands list will be populated later
+        
+        self.bulk_type = QComboBox()
+        self.bulk_type.addItems(["Percentage (%)", "Fixed Amount (DZD)"])
+        
+        self.bulk_val = QLineEdit()
+        self.bulk_val.setPlaceholderText("Value (e.g. 5 or -1000)")
+        self.bulk_val.setFixedWidth(150)
+        
+        bulk_btn = QPushButton("Apply Change")
+        bulk_btn.setObjectName("Primary")
+        bulk_btn.clicked.connect(self.apply_bulk_update)
+        
+        form.addWidget(QLabel("Brand:"))
+        form.addWidget(self.bulk_brand)
+        form.addWidget(QLabel("Change By:"))
+        form.addWidget(self.bulk_type)
+        form.addWidget(self.bulk_val)
+        form.addWidget(bulk_btn)
+        bulk_l.addLayout(form)
+        layout.addWidget(bulk_group)
+
         btn3 = QPushButton("✨ Fix Data Formatting (Quotes)")
         btn3.setMinimumHeight(60)
         btn3.clicked.connect(self.fix_quotes)
@@ -375,6 +431,64 @@ class SmartPhoneManager(QMainWindow):
             
         self.phones = self.parse_js_array(self.current_js_content)
         self.refresh_list()
+        
+        # Update bulk brands
+        brands = sorted(list(set(p['brand'] for p in self.phones)))
+        self.bulk_brand.clear()
+        self.bulk_brand.addItem("All Brands")
+        self.bulk_brand.addItems(brands)
+
+    # ... [keep existing parse methods] ...
+
+    def show_price_history(self):
+        row = self.phone_list.currentRow()
+        if row < 0: return
+        p = self.phones[row]
+        hist = p.get('price_history', [])
+        if not hist:
+            QMessageBox.information(self, "History", "No price history available for this phone.")
+            return
+        
+        text = f"Price History for {p['name']}:\n\n"
+        for entry in hist:
+            text += f"• {entry['date']}: {entry['price']:,} DZD\n"
+        
+        QMessageBox.information(self, "History", text)
+
+    def apply_bulk_update(self):
+        brand = self.bulk_brand.currentText()
+        change_type = self.bulk_type.currentText()
+        try:
+            val = float(self.bulk_val.text())
+        except:
+            QMessageBox.warning(self, "Error", "Invalid numeric value.")
+            return
+            
+        if QMessageBox.question(self, "Confirm", f"Update prices for {brand} by {val}? This cannot be undone.") != QMessageBox.Yes:
+            return
+            
+        count = 0
+        for p in self.phones:
+            if brand == "All Brands" or p['brand'] == brand:
+                old_p = p['price']
+                if "Percentage" in change_type:
+                    p['price'] = int(p['price'] * (1 + val/100))
+                else:
+                    p['price'] = int(p['price'] + val)
+                
+                # Add to history if changed
+                if old_p != p['price']:
+                    if 'price_history' not in p: p['price_history'] = []
+                    p['price_history'].append({
+                        'date': datetime.now().strftime("%Y-%m-%d"),
+                        'price': p['price']
+                    })
+                    count += 1
+        
+        self.write_to_js()
+        self.refresh_list()
+        QMessageBox.information(self, "Success", f"Updated {count} phones!")
+
 
     def parse_js_array(self, content):
         match = re.search(r'const products = \[\s*([\s\S]*?)\];', content)
@@ -407,7 +521,18 @@ class SmartPhoneManager(QMainWindow):
         data['price'] = int(get(r'price:\s*(\d+)', "0"))
         data['image'] = get(r'image:\s*"(.*?)"')
         data['rating'] = float(get(r'rating:\s*([\d\.]+)', "0"))
+        data['status'] = get(r'status:\s*"(.*?)"', 'available')
         
+        # Parse Price History
+        data['price_history'] = []
+        hist_m = re.search(r'price_history:\s*\[([\s\S]*?)\]', s)
+        if hist_m:
+            hist_str = hist_m.group(1)
+            # Find { date: "...", price: ... } blocks
+            entries = re.findall(r'\{\s*date:\s*"(.*?)",\s*price:\s*(\d+)\s*\}', hist_str)
+            for d, p in entries:
+                data['price_history'].append({'date': d, 'price': int(p)})
+
         specs_match = re.search(r'specs:\s*\{([\s\S]*?)\}', s)
         if specs_match:
             for line in specs_match.group(1).split(','):
@@ -435,14 +560,18 @@ class SmartPhoneManager(QMainWindow):
         if row < 0 or row >= len(self.phones): return
         p = self.phones[row]
         for key in self.inputs:
-            if key in p:
+            if key == 'status':
+                idx = self.inputs['status'].findText(p.get('status', 'available'))
+                self.inputs['status'].setCurrentIndex(idx if idx >= 0 else 0)
+            elif key in p:
                 self.inputs[key].setText(str(p[key]))
             elif key in p.get('specs', {}):
                 self.inputs[key].setText(str(p['specs'][key]))
             elif key == 'tag' and p.get('tags'):
                 self.inputs[key].setText(p['tags'][0])
             else:
-                self.inputs[key].clear()
+                if hasattr(self.inputs[key], 'clear'):
+                    self.inputs[key].clear()
 
     def new_phone(self):
         for i in self.inputs.values(): i.clear()
@@ -454,13 +583,32 @@ class SmartPhoneManager(QMainWindow):
         if not name: return
         
         row = self.phone_list.currentRow()
+        new_price = int(self.inputs['price'].text() or 0)
+        
+        # Determine History
+        history = []
+        if row >= 0:
+            p_old = self.phones[row]
+            history = p_old.get('price_history', [])
+            # If price changed, add to history
+            if p_old.get('price') != new_price:
+                history.append({
+                    'date': datetime.now().strftime("%Y-%m-%d"),
+                    'price': new_price
+                })
+        else:
+            # New phone, start history
+            history = [{'date': datetime.now().strftime("%Y-%m-%d"), 'price': new_price}]
+
         new_p = {
             'id': self.phones[row]['id'] if row >= 0 else self.get_next_id(),
             'name': name,
             'brand': self.inputs['brand'].text(),
-            'price': int(self.inputs['price'].text() or 0),
+            'price': new_price,
             'rating': float(self.inputs['rating'].text() or 0),
             'image': self.inputs['image'].text(),
+            'status': self.inputs['status'].currentText(),
+            'price_history': history,
             'specs': {k: self.inputs[k].text() for k in ['screen', 'refresh', 'ram', 'storage', 'camera', 'battery', 'processor', 'network']},
         }
         if self.inputs['tag'].text():
@@ -497,6 +645,15 @@ class SmartPhoneManager(QMainWindow):
             js_parts.append(f'        price: {p["price"]},\n')
             js_parts.append(f'        image: "{p["image"]}",\n')
             js_parts.append(f'        rating: {p["rating"]},\n')
+            js_parts.append(f'        status: "{p.get("status", "available")}",\n')
+            
+            # Write Price History
+            if p.get('price_history'):
+                hist_lines = []
+                for entry in p['price_history']:
+                    hist_lines.append(f'{{ date: "{entry["date"]}", price: {entry["price"]} }}')
+                js_parts.append(f'        price_history: [{", ".join(hist_lines)}],\n')
+
             js_parts.append('        specs: {\n')
             for k, v in p['specs'].items():
                 v_safe = v.replace('"', '\\"') # Auto-fix quotes
@@ -541,6 +698,7 @@ class SmartPhoneManager(QMainWindow):
                 'price': 0,
                 'rating': 4.5,
                 'image': data['image'],
+                'status': 'available',
                 'specs': data['specs']
             }
             self.phones.append(new_p)
@@ -584,6 +742,7 @@ class SmartPhoneManager(QMainWindow):
                     'price': d['price'],
                     'rating': 4.5,
                     'image': f"Photos/{d['name'].replace(' ', '_')}.jpg",
+                    'status': 'available',
                     'specs': {k: d['specs'].get(k, "TBA") for k in ['screen', 'refresh', 'ram', 'storage', 'camera', 'battery', 'processor', 'network']}
                 }
                 self.phones.append(p)

@@ -61,6 +61,7 @@ function setupEventListeners() {
 
     document.getElementById('mainSearch')?.addEventListener('input', debounce(handleSearch, 280));
     document.getElementById('priceRange')?.addEventListener('input', handleFilters);
+    document.getElementById('installmentRange')?.addEventListener('input', handleFilters);
     document.getElementById('sortSelect')?.addEventListener('change', handleSort);
 
     document.querySelectorAll('.screen-filter, .refresh-filter, .ram-filter').forEach(el => {
@@ -107,21 +108,28 @@ function renderPage() {
 // PRICE SLIDER
 // ============================================================
 function initPriceSlider() {
-    const slider = document.getElementById('priceRange');
-    if (!slider) return;
-    updateSliderTrack(slider);
-    slider.addEventListener('input', () => updateSliderTrack(slider));
+    const pSlider = document.getElementById('priceRange');
+    const iSlider = document.getElementById('installmentRange');
+    
+    if (pSlider) {
+        updateSliderTrack(pSlider, 'priceMax');
+        pSlider.addEventListener('input', () => updateSliderTrack(pSlider, 'priceMax'));
+    }
+    if (iSlider) {
+        updateSliderTrack(iSlider, 'installmentMax');
+        iSlider.addEventListener('input', () => updateSliderTrack(iSlider, 'installmentMax'));
+    }
 }
 
-function updateSliderTrack(slider) {
+function updateSliderTrack(slider, labelId) {
     const min = parseInt(slider.min);
     const max = parseInt(slider.max);
     const val = parseInt(slider.value);
     const pct = ((val - min) / (max - min)) * 100;
     slider.style.background = `linear-gradient(to left, var(--green) ${pct}%, var(--border) ${pct}%)`;
-    const priceMaxEl = document.getElementById('priceMax');
-    if (priceMaxEl) {
-        priceMaxEl.textContent = val >= parseInt(slider.max)
+    const labelEl = document.getElementById(labelId);
+    if (labelEl) {
+        labelEl.textContent = val >= parseInt(slider.max)
             ? parseInt(slider.max).toLocaleString() + '+'
             : val.toLocaleString();
     }
@@ -133,8 +141,10 @@ function updateSliderTrack(slider) {
 function handleFilters() {
     const searchQuery = document.getElementById('mainSearch').value.toLowerCase().trim();
     const maxPrice = parseInt(document.getElementById('priceRange').value);
+    const maxInstallment = parseInt(document.getElementById('installmentRange').value);
 
-    updateSliderTrack(document.getElementById('priceRange'));
+    updateSliderTrack(document.getElementById('priceRange'), 'priceMax');
+    updateSliderTrack(document.getElementById('installmentRange'), 'installmentMax');
 
     const selectedBrands  = getChecked('.brand-filter');
     const selectedScreens = getChecked('.screen-filter');
@@ -148,13 +158,16 @@ function handleFilters() {
             p.brand.toLowerCase().includes(searchQuery) ||
             Object.values(p.specs).some(v => v && v.toLowerCase().includes(searchQuery));
 
-        const matchesPrice   = p.price <= maxPrice;
+        const matchesPrice       = p.price <= maxPrice;
+        const phoneInstallment   = Math.round((p.price * 1.45) / 12);
+        const matchesInstallment = phoneInstallment <= maxInstallment;
+
         const matchesBrand   = selectedBrands.length === 0   || selectedBrands.includes(p.brand);
         const matchesScreen  = selectedScreens.length === 0  || (p.specs.screen  && selectedScreens.some(s => p.specs.screen.includes(s)));
         const matchesRefresh = selectedRefresh.length === 0  || (p.specs.refresh && selectedRefresh.some(r => p.specs.refresh.includes(r)));
         const matchesRam     = selectedRam.length === 0      || (p.specs.ram     && selectedRam.some(r => p.specs.ram.includes(r)));
 
-        return matchesSearch && matchesPrice && matchesBrand && matchesScreen && matchesRefresh && matchesRam;
+        return matchesSearch && matchesPrice && matchesInstallment && matchesBrand && matchesScreen && matchesRefresh && matchesRam;
     });
 
     currentData = filtered;
@@ -194,11 +207,16 @@ function resetFilters() {
     document.querySelectorAll('.brand-filter, .screen-filter, .refresh-filter, .ram-filter').forEach(el => {
         el.checked = false;
     });
-    // Reset price slider
-    const slider = document.getElementById('priceRange');
-    if (slider) {
-        slider.value = slider.max;
-        updateSliderTrack(slider);
+    // Reset sliders
+    const pSlider = document.getElementById('priceRange');
+    if (pSlider) {
+        pSlider.value = pSlider.max;
+        updateSliderTrack(pSlider, 'priceMax');
+    }
+    const iSlider = document.getElementById('installmentRange');
+    if (iSlider) {
+        iSlider.value = iSlider.max;
+        updateSliderTrack(iSlider, 'installmentMax');
     }
     // Reset search
     const searchInput = document.getElementById('mainSearch');
@@ -241,13 +259,20 @@ function renderGrid(data) {
         card.style.animationDelay = `${idx * 0.04}s`;
 
         const installment12 = Math.round((p.price * 1.45) / 12);
-        const badgeHtml     = p.tags && p.tags.length > 0
-            ? `<span class="product-badge">${p.tags[0]}</span>` : '';
+        
+        let badgesHtml = '';
+        if (p.status === 'out_of_stock') {
+            badgesHtml += `<span class="product-badge out-of-stock">نفذت الكمية</span>`;
+        } else if (p.tags && p.tags.length > 0) {
+            badgesHtml += `<span class="product-badge">${p.tags[0]}</span>`;
+        }
+        
         const batteryShort  = p.specs.battery ? p.specs.battery.split(' / ')[0] : 'N/A';
         const isCompared    = compareList.includes(p.id);
+        const isOutOfStock  = p.status === 'out_of_stock';
 
         card.innerHTML = `
-            ${badgeHtml}
+            ${badgesHtml}
             <div class="product-img-wrap" onclick="openModal(${p.id})">
                 <img src="${p.image}"
                      alt="${p.name}"
@@ -286,8 +311,8 @@ function renderGrid(data) {
                 <button class="btn btn-outline" onclick="openModal(${p.id})">
                     <i class="fas fa-info-circle"></i> التفاصيل
                 </button>
-                <button class="btn btn-primary" onclick="openModal(${p.id})">
-                    <i class="fas fa-shopping-bag"></i> اطلب الآن
+                <button class="btn btn-primary" onclick="${isOutOfStock ? '' : `openModal(${p.id})`}" ${isOutOfStock ? 'disabled' : ''}>
+                    <i class="fas fa-shopping-bag"></i> ${isOutOfStock ? 'غير متوفر' : 'اطلب الآن'}
                 </button>
             </div>`;
 
@@ -382,6 +407,7 @@ function openModal(id) {
     if (!p) return;
 
     const installment12 = Math.round((p.price * 1.45) / 12);
+    const isOutOfStock = p.status === 'out_of_stock';
 
     document.getElementById('modalGallery').innerHTML = `
         <img src="${p.image}" alt="${p.name}"
@@ -391,7 +417,7 @@ function openModal(id) {
     document.getElementById('modalName').textContent    = p.name;
     document.getElementById('modalRating').innerHTML    = renderStars(p.rating);
     document.getElementById('modalPrice').textContent   = `${p.price.toLocaleString()} DZD`;
-    document.getElementById('modalInstallmentBadge').textContent = `أو ${installment12.toLocaleString()} DZD/شهر`;
+    document.getElementById('modalInstallmentBadge').textContent = isOutOfStock ? '' : `أو ${installment12.toLocaleString()} DZD/شهر`;
 
     const plans = [
         { label: 'دفع كاش',           total: p.price,        monthly: p.price,              months: 1  },
@@ -400,11 +426,13 @@ function openModal(id) {
         { label: 'تقسيط 12 شهر (+45%)', total: p.price * 1.45, monthly: (p.price * 1.45) / 12, months: 12 },
     ];
 
-    document.getElementById('modalPaymentPlans').innerHTML = plans.map(plan => `
-        <div class="plan-row">
-            <span>${plan.label}</span>
-            <span>${Math.round(plan.monthly).toLocaleString()} DZD / شهر</span>
-        </div>`).join('');
+    document.getElementById('modalPaymentPlans').innerHTML = isOutOfStock 
+        ? '<div style="text-align:center; padding: 20px; color: var(--red); font-weight: bold;">عذراً، هذا الهاتف غير متوفر حالياً.</div>'
+        : plans.map(plan => `
+            <div class="plan-row">
+                <span>${plan.label}</span>
+                <span>${Math.round(plan.monthly).toLocaleString()} DZD / شهر</span>
+            </div>`).join('');
 
     // Specs table
     const specsTable = document.getElementById('modalSpecs');
@@ -422,8 +450,17 @@ function openModal(id) {
     }
 
     // WhatsApp link
-    const message = encodeURIComponent(`مرحباً Djellal Boutique، أريد الاستفسار عن ${p.name} وخطط التقسيط المتاحة.`);
-    document.getElementById('whatsappBtn').href = `https://wa.me/213540203685?text=${message}`;
+    const whatsappBtn = document.getElementById('whatsappBtn');
+    if (isOutOfStock) {
+        whatsappBtn.classList.add('disabled');
+        whatsappBtn.innerHTML = '<i class="fab fa-whatsapp"></i> غير متوفر';
+        whatsappBtn.href = '#';
+    } else {
+        whatsappBtn.classList.remove('disabled');
+        whatsappBtn.innerHTML = '<i class="fab fa-whatsapp"></i> واتساب';
+        const msg = encodeURIComponent(`مرحباً Djellal Boutique، أود الاستفسار عن ${p.name} (${p.specs.ram}/${p.specs.storage}).`);
+        whatsappBtn.href = `https://wa.me/213540203685?text=${msg}`;
+    }
 
     document.getElementById('productModal').style.display = 'flex';
     document.body.style.overflow = 'hidden';
